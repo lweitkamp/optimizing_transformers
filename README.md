@@ -10,7 +10,7 @@ how these techniques work. Parallelization techniques for example are written in
 and it will not make sense to benchmark performance there.
 
 - [X] Packing
-- [ ] KV-Cache
+- [X] KV-Cache
 - [ ] Gradient Checkpointing / Rematerialization / activation recomputation
 - [ ] Flash Attention
 - [ ] Model Parallization
