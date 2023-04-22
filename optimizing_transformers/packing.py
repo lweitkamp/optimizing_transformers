@@ -1,8 +1,8 @@
-import jax.numpy as jnp
-import jax
-import numpy as np
-
 from typing import List, Tuple
+
+import jax
+import jax.numpy as jnp
+import numpy as np
 
 
 def create_mask(seq_len: int) -> jnp.ndarray:

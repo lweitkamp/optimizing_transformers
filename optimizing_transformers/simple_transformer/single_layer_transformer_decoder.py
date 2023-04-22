@@ -1,13 +1,10 @@
 """Implementation of a single layer transformer decoder.
 Positional encoding is omitted for simplicity."""
+import flax.linen as nn
 import jax.numpy as jnp
 
-import flax.linen as nn
-
 from optimizing_transformers.attention import Attention
-from optimizing_transformers.simple_transformer.mlp import (
-    MultiLayerPerceptron,
-)
+from optimizing_transformers.simple_transformer.mlp import MultiLayerPerceptron
 
 
 class SingleLayerTransformerDecoder(nn.Module):

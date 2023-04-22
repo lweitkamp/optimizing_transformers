@@ -1,7 +1,6 @@
 import flax.linen as nn
-import jax.numpy as jnp
-
 import jax
+import jax.numpy as jnp
 
 
 class MultiLayerPerceptron(nn.Module):

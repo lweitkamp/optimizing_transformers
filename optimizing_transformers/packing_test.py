@@ -1,14 +1,13 @@
-import jax.numpy as jnp
-import jax
-import optax
-from optimizing_transformers.packing import process_sequences
-from optimizing_transformers.simple_transformer import (
-    SingleLayerTransformerDecoder
-)
-
-import numpy as np
-
 import unittest
+
+import jax
+import jax.numpy as jnp
+import numpy as np
+import optax
+
+from optimizing_transformers.packing import process_sequences
+from optimizing_transformers.simple_transformer import \
+    SingleLayerTransformerDecoder
 
 
 class TestPacking(unittest.TestCase):

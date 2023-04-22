@@ -1,3 +1,1 @@
-from .single_layer_transformer_decoder import (
-    SingleLayerTransformerDecoder,
-)
+from .single_layer_transformer_decoder import SingleLayerTransformerDecoder
