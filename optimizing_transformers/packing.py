@@ -40,7 +40,7 @@ def pack_samples(
     return packed_sequences
 
 
-def process_sequences(
+def preprocess_sequences(
         sequences: List[jnp.ndarray],
         n_context: int,
         pack: bool = True,
@@ -48,7 +48,7 @@ def process_sequences(
     """Pad sequences and add masks. Optionally packs the sequences."""
     masks = [create_mask(s.shape[1]) for s in sequences]
     samples = [(s, m) for s, m in zip(sequences, masks)]
-    
+
     if pack:
         samples = pack_samples(samples, n_context=n_context)
 

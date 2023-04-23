@@ -5,7 +5,7 @@ import jax.numpy as jnp
 import numpy as np
 import optax
 
-from optimizing_transformers.packing import process_sequences
+from optimizing_transformers.packing import preprocess_sequences
 from optimizing_transformers.simple_transformer import \
     SingleLayerTransformerDecoder
 
@@ -22,21 +22,19 @@ class TestPacking(unittest.TestCase):
         jax.random.randint(jax.random.PRNGKey(0), (1, 3), 0, vocab_size),
     ]
 
-    def setUp(self) -> None:
-        # setup sequences.
-        self.x, self.mask = process_sequences(
-            self.seq, self.n_context, pack=False)
-        self.x_pack, self.mask_pack = process_sequences(
-            self.seq, self.n_context, pack=True)
-        
-        self.x = self.x.astype(jnp.int32)
-        self.x_pack = self.x_pack.astype(jnp.int32)
-
     def test_gradient_equal(self):
         """The loss for packed and unpacked sequences should be equal.
         The gradients /should/ be equal, but are not due to numerical
         instability. They are pretty close though!
         """
+        x, mask = preprocess_sequences(
+            self.seq, self.n_context, pack=False)
+        x_pack, mask_pack = preprocess_sequences(
+            self.seq, self.n_context, pack=True)
+
+        x = x.astype(jnp.int32)
+        x_pack = x_pack.astype(jnp.int32)
+
         transformer_decoder = SingleLayerTransformerDecoder(
             d_state=self.d_state,
             vocab_size=self.vocab_size,
@@ -44,8 +42,8 @@ class TestPacking(unittest.TestCase):
         )
         weights = transformer_decoder.init(
             jax.random.PRNGKey(self.seed),
-            x=self.x,
-            mask=self.mask,
+            x=x,
+            mask=mask,
         )
 
         def loss(weights, x, mask):
@@ -57,10 +55,9 @@ class TestPacking(unittest.TestCase):
             loss_ = jnp.nan_to_num(loss_)
             return jnp.sum(loss_)
 
-        l, grad = jax.value_and_grad(loss)(
-            weights, self.x, self.mask)
-        l_p, grad_pack = jax.value_and_grad(loss)(
-            weights, self.x_pack, self.mask_pack)
+        # Calculate loss for padded and packed+padded samples.
+        l, grad = jax.value_and_grad(loss)(weights, x, mask)
+        l_p, grad_pack = jax.value_and_grad(loss)(weights, x_pack, mask_pack)
 
         # Loss is equal.
         np.testing.assert_allclose(l, l_p)
