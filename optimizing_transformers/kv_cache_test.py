@@ -18,15 +18,19 @@ class TestKVCache(unittest.TestCase):
         np.ones((n_context, n_context)), k=1).astype('bool')
 
     def test_forward(self):
+        """There should be no difference in the forward pass with and
+        without KV cache."""
         mha = MultiHeadedAttention(
             d_state=self.d_state,
             n_heads=self.n_heads,
         )
+
         (out, _), weights = mha.init_with_output(
             jax.random.PRNGKey(self.seed),
             x=self.x,
             mask=self.mask,
         )
+
         x0, x1 = jnp.array_split(self.x, 2, axis=1)
         out0, kv_cache = mha.apply(weights, x=x0)
         out1, kv_cache = mha.apply(weights, x=x1, kv_cache=kv_cache)
