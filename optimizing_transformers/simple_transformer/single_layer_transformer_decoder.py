@@ -3,15 +3,16 @@ Positional encoding is omitted for simplicity."""
 import flax.linen as nn
 import jax.numpy as jnp
 
-from optimizing_transformers.attention import Attention
+from optimizing_transformers.attention import MultiHeadedAttention
 from optimizing_transformers.simple_transformer.mlp import MultiLayerPerceptron
 
 
 class SingleLayerTransformerDecoder(nn.Module):
     d_state: int
     vocab_size: int
+    n_heads: int
 
-    attn_fn: nn.Module = Attention
+    attn_fn: nn.Module = MultiHeadedAttention
     mlp_fn: nn.Module = MultiLayerPerceptron
 
     @nn.compact
@@ -25,7 +26,7 @@ class SingleLayerTransformerDecoder(nn.Module):
         x = nn.Embed(self.vocab_size, self.d_state)(x)
 
         # (Multi-Headed) self-attention
-        attn = self.attn_fn(self.d_state)(x, mask=mask)
+        attn = self.attn_fn(self.d_state, self.n_heads)(x, mask=mask)
         x = nn.LayerNorm()(x + attn)
 
         # MLP

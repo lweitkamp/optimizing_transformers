@@ -1,35 +1,10 @@
 from typing import List, Tuple
 
-import jax
 import jax.numpy as jnp
 import numpy as np
 
-
-def create_mask(seq_len: int) -> jnp.ndarray:
-    """Create a mask for a sequence of length seq_len."""
-    mask = np.triu(np.ones((seq_len, seq_len)), k=1).astype('bool')
-    return jax.device_put(mask)
-
-
-def pad_mask(mask: jnp.ndarray, n_context: int) -> jnp.ndarray:
-    """Pad an autoregressive mask."""
-    new_mask = np.ones((n_context, n_context), dtype=bool)
-    seq_len = mask.shape[1]
-    new_mask[:seq_len, :seq_len] = mask
-    return jax.device_put(new_mask)
-
-
-def pad_sample(
-        sequence: jnp.ndarray,
-        mask: jnp.ndarray,
-        n_context: int,
-) -> Tuple[jnp.ndarray, jnp.ndarray]:
-    """Pad a sequence to the maximum length. Returns both the
-    padded sequence as the mask for the padded sequence."""
-    padding = jnp.zeros((1, n_context - sequence.shape[1]))
-    padded_sequence = jnp.concatenate([sequence, padding], axis=1)
-    mask = pad_mask(mask, n_context)
-    return padded_sequence, mask
+from optimizing_transformers.simple_transformer.token import (
+    create_mask, pad_sample)
 
 
 def pack_samples(
