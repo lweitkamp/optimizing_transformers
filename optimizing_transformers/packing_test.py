@@ -33,9 +33,14 @@ class TestPacking(unittest.TestCase):
         self.x_pack = self.x_pack.astype(jnp.int32)
 
     def test_gradient_equal(self):
+        """The loss for packed and unpacked sequences should be equal.
+        The gradients /should/ be equal, but are not due to numerical
+        instability. They are pretty close though!
+        """
         transformer_decoder = SingleLayerTransformerDecoder(
             d_state=self.d_state,
             vocab_size=self.vocab_size,
+            n_heads=1,
         )
         weights = transformer_decoder.init(
             jax.random.PRNGKey(self.seed),
