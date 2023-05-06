@@ -18,3 +18,5 @@ and it will not make sense to benchmark performance there.
 - [ ] Token parallelization
 - [ ] QK Normalization
 - [ ] Int8 Quantization
+- [ ] ALiBi
+- [ ] RoPE
