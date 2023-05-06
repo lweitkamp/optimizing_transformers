@@ -18,12 +18,6 @@ class TestPacking(unittest.TestCase):
     n_context: int = 5
     seed: int = 0
 
-    seq = [
-        jax.random.randint(jax.random.PRNGKey(0), (1, 2), 0, vocab_size),
-        jax.random.randint(jax.random.PRNGKey(0), (1, 2), 0, vocab_size),
-        jax.random.randint(jax.random.PRNGKey(0), (1, 3), 0, vocab_size),
-    ]
-
     def test_gradient_equal(self):
         """The loss for packed and unpacked sequences should be equal.
         The gradients /should/ be equal, but are not due to numerical
