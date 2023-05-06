@@ -1,58 +1,47 @@
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
-import jax.numpy as jnp
 import numpy as np
 
-from optimizing_transformers.simple_transformer.token import (
-    create_mask, pad_sample)
 
+def greedy_histogram_pack(
+    sequences: List[Union[np.ndarray, List[int]]],
+    n_context: int,
+) -> Tuple[List[np.ndarray], List[List[int]]]:
+    """Two pointer greedy approach to packing.
+    Sort the sequences by length and then pack the longest and shortest.
+    Complexity is O(n log n) due to sorting.
 
-def pack_samples(
-        samples: List[Tuple[jnp.ndarray, jnp.ndarray]],
-        n_context: int,
-) -> List[Tuple[jnp.ndarray, jnp.ndarray]]:
-    """Pack samples greedily until the context length is reached.
-    Only one pass is made over the samples, this is just a demo.
-    Repeat this function untill the length of each sample does not change."""
-    sorted_samples = sorted(samples, key=lambda x: x[0].shape[1])
+    Args:
+        sequences: List of sequences to pack.
+        n_context: The maximum length of the packed sequence.
 
-    # Pack the sequences greedily.
+    Returns:
+        packed_sequences: A list of tuples (packed_sequence, list_of_lengths)
+        that indicates the length of each sequence in a packed sequence.
+    """
+    sorted_sequences = sorted(sequences, key=len)
+    sorted_sequences = [(np.array(seq), [len(seq)])
+                        for seq in sorted_sequences]
+
     packed_sequences = []
-    (current_s, current_m) = sorted_samples[0]
-    for sample in sorted_samples[1:]:
-        s, m = sample
+    i, j = 0, len(sequences) - 1
 
-        if current_s.shape[1] + s.shape[1] <= n_context:
-            # Merge the sequences and masks.
-            new_mask = np.ones((current_s.shape[1] + s.shape[1],
-                                current_s.shape[1] + s.shape[1]), dtype=bool)
-            new_mask[:current_s.shape[1], :current_s.shape[1]] = current_m
-            new_mask[current_s.shape[1]:, current_s.shape[1]:] = m
+    while i < j:
+        seq_i, ind_i = sorted_sequences[i]
+        seq_j, ind_j = sorted_sequences[j]
 
-            current_s = jnp.concatenate([current_s, s], axis=1)
-            current_m = new_mask
-
+        # packable
+        if len(seq_i) + len(seq_j) <= n_context:
+            sorted_sequences[j] = (
+                np.concatenate([seq_j, seq_i], axis=0),
+                ind_j + ind_i,
+            )
+            i += 1
         else:
-            packed_sequences.append((current_s, current_m))
-            current_s, current_m = s, m
+            packed_sequences.append((np.asarray(seq_j), ind_j))
+            j -= 1
 
-    packed_sequences.append((current_s, current_m))
-    return packed_sequences
-
-
-def preprocess_sequences(
-        sequences: List[jnp.ndarray],
-        n_context: int,
-        pack: bool = True,
-) -> Tuple[jnp.ndarray, jnp.ndarray]:
-    """Pad sequences and add masks. Optionally packs the sequences."""
-    masks = [create_mask(s.shape[1]) for s in sequences]
-    samples = [(s, m) for s, m in zip(sequences, masks)]
-
-    if pack:
-        samples = pack_samples(samples, n_context=n_context)
-
-    samples = [pad_sample(s, m, n_context=n_context) for s, m in samples]
-    x = jnp.concatenate([s[0] for s in samples], axis=0)
-    mask = jnp.stack([s[1] for s in samples], axis=0)
-    return x, mask
+    # add the last sequence
+    packed_sequences.append(sorted_sequences[j])
+    packed_equences, packed_indices = zip(*packed_sequences)
+    return packed_equences, packed_indices
