@@ -16,7 +16,7 @@ and it will not make sense to benchmark performance there.
 - [ ] Model Parallization
 - [ ] Pipeline Parallelization
 - [ ] Token parallelization
-- [ ] QK Normalization
+- [X] QK Normalization
 - [ ] Int8 Quantization
 - [ ] ALiBi
 - [ ] RoPE
