@@ -6,7 +6,7 @@ import jax.numpy as jnp
 from optimizing_transformers.attention import dot_product_attention
 
 
-class MultiHeadedAttention(nn.Module):
+class MultiHeadedAttentionKVCache(nn.Module):
     d_state: int = 512
     n_heads: int = 8
 
@@ -41,6 +41,6 @@ class MultiHeadedAttention(nn.Module):
             V.transpose((0, 2, 1, 3)),
             mask,
         )
-        
+
         out = nn.DenseGeneral(features=self.d_state, axis=(-3, -1))(attention)
         return out, kv_cache
