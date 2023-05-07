@@ -12,7 +12,7 @@ from optimizing_transformers.simple_transformer.preprocess import create_mask
 class TestPacking(unittest.TestCase):
     d_state: int = 512
     n_heads: int = 8
-    n_context: int = 3
+    n_context: int = 5
     seed: int = 0
 
     x = jnp.ones((1, n_context, d_state))
