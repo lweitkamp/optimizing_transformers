@@ -28,7 +28,13 @@ class MultiHeadedAttentionQKNormed(nn.Module):
         K = nn.DenseGeneral(features=features, axis=-1)(x)
         V = nn.DenseGeneral(features=features, axis=-1)(x)
 
-        # TODO: normalize Q and K.
+        # l2 normalize Q and K along the head dimension.
+        Q = Q / jnp.linalg.norm(Q, axis=-1, keepdims=True)
+        K = K / jnp.linalg.norm(K, axis=-1, keepdims=True)
+
+        # Optionally save these values for unit tests.
+        self.sow('intermediates', 'Q', Q)
+        self.sow('intermediates', 'K', K)
 
         attention = dot_product_attention(
             Q.transpose((0, 2, 1, 3)),
