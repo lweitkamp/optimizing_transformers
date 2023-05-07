@@ -42,8 +42,7 @@ def create_mask(sequence_lengths: List[int]) -> np.ndarray:
 
     def create_autoregressive_mask(sequence_length: int) -> np.ndarray:
         mask = np.triu(np.ones((sequence_length, sequence_length)), k=1)
-        mask = mask == 0
-        return ~mask
+        return mask
 
     sequence, offset = sum(sequence_lengths), 0
     mask = np.ones((sequence, sequence), dtype=np.bool_)

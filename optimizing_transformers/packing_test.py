@@ -13,9 +13,10 @@ from optimizing_transformers.simple_transformer.preprocess import \
 
 
 class TestPacking(unittest.TestCase):
-    d_state: int = 2
-    vocab_size: int = 10
+    d_state: int = 2  # FP errors are more likely with larger d_state.
+    n_heads: int = 8
     n_context: int = 5
+    vocab_size: int = 10
     seed: int = 0
 
     def test_gradient_equal(self):
