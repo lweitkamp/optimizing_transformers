@@ -5,7 +5,7 @@ import jax.numpy as jnp
 import numpy as np
 
 from optimizing_transformers.qk_normalization import \
-    MultiHeadedAttentionQKNormed
+    MultiHeadedAttentionQKNormed, qk_l2_norm, qk_layer_norm
 from optimizing_transformers.simple_transformer.preprocess import create_mask
 
 
@@ -32,12 +32,14 @@ class TestPacking(unittest.TestCase):
         )
         assert out.shape == self.x.shape
 
-    def test_norm(self):
+    def test_l2_norm(self):
         """The Q and K matrices should be l2 normalized along the head
-        dimension. Here we check that this dimension sums to 1.0."""
+        dimension. Here we check that the norm of this is 1.0."""
         mha_qknormed = MultiHeadedAttentionQKNormed(
             d_state=self.d_state,
             n_heads=self.n_heads,
+            norm=qk_l2_norm,
+            L=self.n_context,
         )
         weights = mha_qknormed.init(
             jax.random.PRNGKey(0),
@@ -53,4 +55,30 @@ class TestPacking(unittest.TestCase):
         Q = mod_vars['intermediates']['Q'][0]
         K = mod_vars['intermediates']['K'][0]
         np.testing.assert_allclose(jnp.linalg.norm(Q, axis=-1), 1.0)
-        np.testing.assert_allclose(jnp.linalg.norm(K, axis=-1), 1.0)
+        np.testing.assert_allclose(jnp.linalg.norm(K, axis=-1), 1.0, rtol=1e-5)
+
+    def test_layer_norm(self):
+        """The Q and K matrices should be layer normalized along the head
+        dimension."""
+        mha_qknormed = MultiHeadedAttentionQKNormed(
+            d_state=self.d_state,
+            n_heads=self.n_heads,
+            norm=qk_layer_norm,
+        )
+        weights = mha_qknormed.init(
+            jax.random.PRNGKey(0),
+            x=self.x,
+            mask=self.mask,
+        )
+        _, mod_vars = mha_qknormed.apply(
+            weights,
+            x=self.x,
+            mask=self.mask,
+            mutable=['intermediates'],
+        )
+        Q = mod_vars['intermediates']['Q'][0]
+        K = mod_vars['intermediates']['K'][0]
+        np.testing.assert_allclose(Q.mean(), 0.0, atol=1e-08, rtol=1e-05)
+        np.testing.assert_allclose(Q.std(), 1.0, atol=1e-08, rtol=1e-05)
+        np.testing.assert_allclose(K.mean(), 0.0, atol=1e-08, rtol=1e-05)
+        np.testing.assert_allclose(K.std(), 1.0, atol=1e-08, rtol=1e-05)

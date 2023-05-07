@@ -5,8 +5,9 @@ import jax
 from typing import Optional
 
 
-def dot_product_attention(q, k, v, mask):
-    attention_weights = (q @ k) / jnp.sqrt(k.shape[-1])
+def dot_product_attention(q, k, v, mask, scale: Optional[float] = None):
+    scale = scale or jnp.sqrt(k.shape[-1])
+    attention_weights = (q @ k) / scale
 
     if mask is not None:
         if attention_weights.ndim == 4 and mask.ndim == 3:
