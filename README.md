@@ -9,6 +9,9 @@ However, most examples are just that - examples to get a better understanding of
 how these techniques work. Parallelization techniques for example are written in MPI,
 and it will not make sense to benchmark performance there.
 
+Maybe in the end I'll turn it into one unified transformer model (if it's even possible) and
+benchmark that on wikitext or so.
+
 | Technique | Implemented | Code | Unit Tests | Blog Post |
 | :-------- | :---------: | :--- | :--------- | :-------- |
 | Packing | ✔️ | [Packing](https://github.com/lweitkamp/optimizing_transformers/blob/main/optimizing_transformers/alibi.py) | [tests](https://github.com/lweitkamp/optimizing_transformers/blob/main/optimizing_transformers/alibi_test.py) |  |
