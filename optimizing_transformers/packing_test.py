@@ -36,8 +36,6 @@ class TestPacking(unittest.TestCase):
             n_context=self.n_context,
         )
 
-        print("")
-
         transformer_decoder = SingleLayerTransformerDecoder(
             d_state=self.d_state,
             vocab_size=self.vocab_size,
