@@ -3,8 +3,8 @@ from typing import List
 
 
 def alibi_mask(
-        n_context: int,
-        m: List[float],
+    n_context: int,
+    m: List[float],
 ) -> np.ndarray:
     """Create a mask for the heads of the alibi model.
 
