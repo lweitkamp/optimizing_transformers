@@ -14,7 +14,7 @@ benchmark that on wikitext or so.
 
 | Technique | Implemented | Code | Unit Tests | Blog Post |
 | :-------- | :---------: | :--- | :--------- | :-------- |
-| Packing | ✔️ | [Packing](https://github.com/lweitkamp/optimizing_transformers/blob/main/optimizing_transformers/alibi.py) | [tests](https://github.com/lweitkamp/optimizing_transformers/blob/main/optimizing_transformers/alibi_test.py) |  |
+| Packing | ✔️ | [Packing](https://github.com/lweitkamp/optimizing_transformers/blob/main/optimizing_transformers/alibi.py) | [tests](https://github.com/lweitkamp/optimizing_transformers/blob/main/optimizing_transformers/alibi_test.py) | [link](https://lweitkamp.github.io/posts/packing/) |
 | KV Cache | ✔️ | [KV Cache](https://github.com/lweitkamp/optimizing_transformers/blob/main/optimizing_transformers/kv_cache.py) | [tests](https://github.com/lweitkamp/optimizing_transformers/blob/main/optimizing_transformers/kv_cache_test.py) |  |
 | Gradient Checkpointing | | | | |
 | Flash Attention | | | | |
