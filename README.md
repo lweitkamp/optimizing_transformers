@@ -1,4 +1,4 @@
-# Optimizating transformers
+# Optimizing Transformers
 Simplified examples of common Transformer optimization techniques. These included
 trade-offs from compute to memory (flash attention, checkpointing, caching), parallelization techniques for large language models (model, pipeline,
 token, we can skip data here), stuff that generally improves training (QK normalization,
