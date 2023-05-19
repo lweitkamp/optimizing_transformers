@@ -16,6 +16,7 @@ benchmark that on wikitext or so.
 | :-------- | :---------: | :--- | :--------- | :-------- |
 | Packing | ✔️ | [Packing](https://github.com/lweitkamp/optimizing_transformers/blob/main/optimizing_transformers/alibi.py) | [tests](https://github.com/lweitkamp/optimizing_transformers/blob/main/optimizing_transformers/alibi_test.py) |  |
 | KV Cache | ✔️ | [KV Cache](https://github.com/lweitkamp/optimizing_transformers/blob/main/optimizing_transformers/kv_cache.py) | [tests](https://github.com/lweitkamp/optimizing_transformers/blob/main/optimizing_transformers/kv_cache_test.py) |  |
+| Multi-Query Attention | | | | |
 | Gradient Checkpointing | | | | |
 | Flash Attention | | | | |
 | Model Parallelization | | | | |
