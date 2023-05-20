@@ -7,7 +7,7 @@ import optax
 
 from optimizing_transformers.packing import greedy_histogram_pack
 from optimizing_transformers.simple_transformer import \
-    SingleLayerTransformerDecoder
+    TransformerDecoder
 from optimizing_transformers.simple_transformer.preprocess import \
     preprocess_sequences
 
@@ -16,7 +16,7 @@ class TestPacking(unittest.TestCase):
     d_state: int = 2  # FP errors are more likely with larger d_state.
     n_heads: int = 8
     n_context: int = 5
-    vocab_size: int = 10
+    vocab_size: int = 15
     seed: int = 0
 
     def test_gradient_equal(self):
@@ -24,7 +24,7 @@ class TestPacking(unittest.TestCase):
         The gradients /should/ be equal, but are not due to numerical
         instability. They are pretty close though!
         """
-        seq = [[1, 2, 3, 4, 5], [1, 2], [1, 2, 3], [1, 2, 3, 4]]
+        seq = [[1, 2, 3, 4, 5], [6, 7], [8, 9, 10], [11, 12, 13, 14]]
         x, mask, _ = preprocess_sequences(
             sequences=seq,
             n_context=self.n_context,
@@ -36,7 +36,8 @@ class TestPacking(unittest.TestCase):
             n_context=self.n_context,
         )
 
-        transformer_decoder = SingleLayerTransformerDecoder(
+        transformer_decoder = TransformerDecoder(
+            n_layers=1,
             d_state=self.d_state,
             vocab_size=self.vocab_size,
             n_heads=1,
@@ -48,7 +49,7 @@ class TestPacking(unittest.TestCase):
         )
 
         def loss(weights, x, mask):
-            labels = jnp.where(x == 0, -100, x)
+            labels = jnp.where(x == 0, -10000, x)
             out = transformer_decoder.apply(weights, x=x, mask=mask)
             loss_ = optax.softmax_cross_entropy_with_integer_labels(
                 logits=out, labels=labels

@@ -5,9 +5,12 @@ import jax.numpy as jnp
 
 from optimizing_transformers.attention import MultiHeadedAttention
 from optimizing_transformers.simple_transformer.mlp import MultiLayerPerceptron
+from optimizing_transformers.simple_transformer.decoder_block import \
+    TransformerDecoderBlock
 
 
-class SingleLayerTransformerDecoder(nn.Module):
+class TransformerDecoder(nn.Module):
+    n_layers: int
     d_state: int
     vocab_size: int
     n_heads: int
@@ -25,11 +28,14 @@ class SingleLayerTransformerDecoder(nn.Module):
         # Embed tokens
         x = nn.Embed(self.vocab_size, self.d_state)(x)
 
-        # (Multi-Headed) self-attention
-        attn = self.attn_fn(self.d_state, self.n_heads)(x, mask=mask)
-        x = nn.LayerNorm()(x + attn)
+        for _ in range(self.n_layers):
+            x = TransformerDecoderBlock(
+                    d_state=self.d_state,
+                    n_heads=self.n_heads,
+                    attn_fn=self.attn_fn,
+                    mlp_fn=self.mlp_fn,
+            )(x, mask=mask)
 
-        # MLP
-        x = nn.LayerNorm()(x + self.mlp_fn(self.d_state)(x))
+        # Unembed tokens
         x = nn.Dense(self.vocab_size)(x)
         return x

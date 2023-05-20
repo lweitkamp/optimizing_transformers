@@ -5,7 +5,7 @@ import numpy as np
 
 from optimizing_transformers.alibi import alibi_mask
 from optimizing_transformers.simple_transformer import \
-    SingleLayerTransformerDecoder
+    TransformerDecoder
 from optimizing_transformers.simple_transformer.preprocess import \
     preprocess_sequences
 
@@ -40,7 +40,8 @@ class TestALiBi(unittest.TestCase):
             sequences=seq,
             n_context=self.n_context,
         )
-        transformer_decoder = SingleLayerTransformerDecoder(
+        transformer_decoder = TransformerDecoder(
+            n_layers=1,
             d_state=self.d_state,
             n_heads=self.n_heads,
             vocab_size=self.vocab_size,

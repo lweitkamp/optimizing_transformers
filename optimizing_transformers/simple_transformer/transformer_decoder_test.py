@@ -3,7 +3,7 @@ import unittest
 import jax
 
 from optimizing_transformers.simple_transformer import \
-    SingleLayerTransformerDecoder
+    TransformerDecoder
 from optimizing_transformers.simple_transformer.preprocess import \
     preprocess_sequences
 
@@ -21,7 +21,8 @@ class TestSimpleTransformer(unittest.TestCase):
             sequences=seq,
             n_context=self.n_context,
         )
-        transformer_decoder = SingleLayerTransformerDecoder(
+        transformer_decoder = TransformerDecoder(
+            n_layers=1,
             d_state=self.d_state,
             vocab_size=self.vocab_size,
             n_heads=self.n_heads,
