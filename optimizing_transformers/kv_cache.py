@@ -30,10 +30,13 @@ class MultiHeadedAttentionKVCache(nn.Module):
         V = nn.DenseGeneral(features=features, axis=-1)(x)
 
         if kv_cache is not None:
-            K = jnp.concatenate([kv_cache[:, 0], K], axis=1)
-            V = jnp.concatenate([kv_cache[:, 1], V], axis=1)
+            K = jnp.concatenate([kv_cache[0], K], axis=1)
+            V = jnp.concatenate([kv_cache[1], V], axis=1)
             kv_cache = K, V
             mask = None
+
+        if kv_cache is None:
+            kv_cache = K, V
 
         attention = dot_product_attention(
             Q.transpose((0, 2, 1, 3)),

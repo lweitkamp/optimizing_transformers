@@ -1,7 +1,7 @@
 import flax.linen as nn
 import jax.numpy as jnp
 
-from optimizing_transformers.attention import MultiHeadedAttention
+from optimizing_transformers.multi_headed_attention import MultiHeadedAttention
 from optimizing_transformers.simple_transformer.mlp import MultiLayerPerceptron
 
 

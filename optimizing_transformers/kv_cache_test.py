@@ -12,7 +12,7 @@ from optimizing_transformers.simple_transformer.preprocess import \
 class TestKVCache(unittest.TestCase):
     d_state: int = 512
     n_heads: int = 8
-    n_context: int = 5
+    n_context: int = 2
     seed: int = 0
 
     def test_forward(self):
